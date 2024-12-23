@@ -12,6 +12,13 @@ import lombok.*;
 @ToString
 public class Customer extends BaseEntity {
 
+
+    public Customer(String name, String email, String mobileNumber) {
+        this.name = name;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
