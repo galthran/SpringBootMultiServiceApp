@@ -1,6 +1,7 @@
-package com.jarosinski.accounts.rest;
+package com.jarosinski.accounts.controller;
 
 import com.jarosinski.accounts.constants.AccountConstants;
+import com.jarosinski.accounts.dto.AccountsContactInfoDTO;
 import com.jarosinski.accounts.dto.CustomerDTO;
 import com.jarosinski.accounts.dto.ResponseDTO;
 import com.jarosinski.accounts.service.IAccountService;
@@ -10,7 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,11 +24,25 @@ import org.springframework.web.bind.annotation.*;
 )
 @RestController
 @RequestMapping(value = "/api", produces = "application/json")
-@AllArgsConstructor
 @Validated
 public class AccountController {
 
-    private IAccountService iAccountService;
+    private final IAccountService iAccountService;
+
+    @Value("${build.version}")
+    private String buildVersion;
+
+    private final Environment env;
+
+    private final AccountsContactInfoDTO accountsContactInfoDTO;
+
+    public AccountController(IAccountService iAccountService,
+                             Environment env,
+                             AccountsContactInfoDTO accountsContactInfoDTO) {
+        this.env = env;
+        this.iAccountService = iAccountService;
+        this.accountsContactInfoDTO = accountsContactInfoDTO;
+    }
 
     @Operation(
             summary = "Create account",
@@ -97,5 +113,81 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO(AccountConstants.STATUS_500, AccountConstants.MESSAGE_500));
         }
+    }
+
+    @Operation(
+            summary = "Get Build information",
+            description = "Get Build information that is deployed into accounts microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = AccountConstants.STATUS_200,
+                    description = AccountConstants.MESSAGE_200
+            ),
+            @ApiResponse(
+                    responseCode = AccountConstants.STATUS_500,
+                    description = AccountConstants.MESSAGE_500
+            )
+    })
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity.ok(buildVersion);
+    }
+
+    @Operation(
+            summary = "Get Java version",
+            description = "Get Java version that is deployed into accounts microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = AccountConstants.STATUS_200,
+                    description = AccountConstants.MESSAGE_200
+            ),
+            @ApiResponse(
+                    responseCode = AccountConstants.STATUS_500,
+                    description = AccountConstants.MESSAGE_500
+            )
+    })
+    @GetMapping("/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity.ok(env.getProperty("java.version") + " | " + env.getProperty("JAVA_HOME"));
+    }
+
+    @Operation(
+            summary = "Get Custom env property",
+            description = "Get Custom env property that is deployed into accounts microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = AccountConstants.STATUS_200,
+                    description = AccountConstants.MESSAGE_200
+            ),
+            @ApiResponse(
+                    responseCode = AccountConstants.STATUS_500,
+                    description = AccountConstants.MESSAGE_500
+            )
+    })
+    @GetMapping("/custom-env-property")
+    public ResponseEntity<String> getCustomEnvProperty() {
+        return ResponseEntity.ok(env.getProperty("custom.env.property")); //CUSTOM_ENV_PROPERTY=1.2.3.4
+    }
+
+    @Operation(
+            summary = "Get Contact info",
+            description = "Get Contact info that is deployed into accounts microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = AccountConstants.STATUS_200,
+                    description = AccountConstants.MESSAGE_200
+            ),
+            @ApiResponse(
+                    responseCode = AccountConstants.STATUS_500,
+                    description = AccountConstants.MESSAGE_500
+            )
+    })
+    @GetMapping("/contact-info")
+    public ResponseEntity<AccountsContactInfoDTO> getContactInfo() {
+        return ResponseEntity.ok(accountsContactInfoDTO);
     }
 }

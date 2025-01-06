@@ -2,6 +2,7 @@ package com.jarosinski.loans.controller;
 
 import com.jarosinski.loans.constants.LoansConstants;
 import com.jarosinski.loans.dto.ErrorResponseDto;
+import com.jarosinski.loans.dto.LoansContactInfoDTO;
 import com.jarosinski.loans.dto.LoansDto;
 import com.jarosinski.loans.dto.ResponseDto;
 import com.jarosinski.loans.service.ILoansService;
@@ -13,7 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +32,23 @@ import org.springframework.web.bind.annotation.*;
 )
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
 @Validated
 public class LoansController {
 
-    private ILoansService iLoansService;
+    private final ILoansService iLoansService;
+
+    @Value("${build.version}")
+    private String buildVersion;
+
+    private final Environment env;
+
+    private final LoansContactInfoDTO loansContactInfoDTO;
+
+    public LoansController(ILoansService iLoansService, Environment env, LoansContactInfoDTO loansContactInfoDTO) {
+        this.iLoansService = iLoansService;
+        this.env = env;
+        this.loansContactInfoDTO = loansContactInfoDTO;
+    }
 
     @Operation(
             summary = "Create Loan REST API",
@@ -164,4 +178,79 @@ public class LoansController {
         }
     }
 
+    @Operation(
+            summary = "Get Build information",
+            description = "Get Build information that is deployed into loans microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = LoansConstants.STATUS_200,
+                    description = LoansConstants.MESSAGE_200
+            ),
+            @ApiResponse(
+                    responseCode = LoansConstants.STATUS_500,
+                    description = LoansConstants.MESSAGE_500
+            )
+    })
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity.ok(buildVersion);
+    }
+
+    @Operation(
+            summary = "Get Java version",
+            description = "Get Java version that is deployed into loans microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = LoansConstants.STATUS_200,
+                    description = LoansConstants.MESSAGE_200
+            ),
+            @ApiResponse(
+                    responseCode = LoansConstants.STATUS_500,
+                    description = LoansConstants.MESSAGE_500
+            )
+    })
+    @GetMapping("/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity.ok(env.getProperty("java.version") + " | " + env.getProperty("JAVA_HOME"));
+    }
+
+    @Operation(
+            summary = "Get Custom env property",
+            description = "Get Custom env property that is deployed into loans microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = LoansConstants.STATUS_200,
+                    description = LoansConstants.MESSAGE_200
+            ),
+            @ApiResponse(
+                    responseCode = LoansConstants.STATUS_500,
+                    description = LoansConstants.MESSAGE_500
+            )
+    })
+    @GetMapping("/custom-env-property")
+    public ResponseEntity<String> getCustomEnvProperty() {
+        return ResponseEntity.ok(env.getProperty("custom.env.property")); //CUSTOM_ENV_PROPERTY=1.2.3.4
+    }
+
+    @Operation(
+            summary = "Get Contact info",
+            description = "Get Contact info that is deployed into loans microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = LoansConstants.STATUS_200,
+                    description = LoansConstants.MESSAGE_200
+            ),
+            @ApiResponse(
+                    responseCode = LoansConstants.STATUS_500,
+                    description = LoansConstants.MESSAGE_500
+            )
+    })
+    @GetMapping("/contact-info")
+    public ResponseEntity<LoansContactInfoDTO> getContactInfo() {
+        return ResponseEntity.ok(loansContactInfoDTO);
+    }
 }
