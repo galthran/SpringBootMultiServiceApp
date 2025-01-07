@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
     accounts:
-      image: rafaljarosinski/accounts:0.0.1-SNAPSHOT
+      image: rafaljarosinski/accounts:0.0.3-SNAPSHOT
       container_name: accounts-ms
       ports:
           - "8091:8091"
@@ -14,7 +14,7 @@ services:
         - easybank
 
     loans:
-      image: rafaljarosinski/cards:0.0.1-SNAPSHOT
+      image: rafaljarosinski/cards:0.0.3-SNAPSHOT
       container_name: loans-ms
       ports:
           - "8092:8092"
@@ -26,7 +26,7 @@ services:
         - easybank
 
     cards:
-      image: rafaljarosinski/cards:0.0.2-SNAPSHOT
+      image: rafaljarosinski/cards:0.0.3-SNAPSHOT
       container_name: cards-ms
       ports:
         - "8093:8093"
