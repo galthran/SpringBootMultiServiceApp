@@ -1,0 +1,11 @@
+build:
+  version: "1.0"
+
+accounts:
+  message: "Welcome to the Accounts related PROD API"
+  contactDetails:
+    name: "Jack Doe"
+    email: "jack.doe@example.com"
+  onCallSupport:
+    - "(555) 555-5635"
+    - "(555) 555-8372"
