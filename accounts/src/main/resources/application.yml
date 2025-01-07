@@ -1,6 +1,8 @@
 spring:
   application:
     name: accounts
+  profiles:
+    active: prod
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
@@ -15,22 +17,8 @@ spring:
       ddl-auto: update
     show-sql: true
 
-#  config:
-#    import:
-#      - "application-prod.yml"
-#      - "application-qa.yml"
+  config:
+    import: "optional:configserver:http://localhost:8071"
 
 server:
   port: 8091
-
-build:
-  version: "3.0"
-
-accounts:
-  message: "Welcome to the Accounts related local API"
-  contactDetails:
-    name: "John Doe"
-    email: "john.doe@example.com"
-  onCallSupport:
-    - "(555) 555-1234"
-    - "(555) 555-5678"

@@ -1,11 +1,13 @@
 spring:
   application:
     name: cards
+  profiles:
+    active: prod
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
     username: sa
-    #    password: ''
+#    password: ''
   h2:
     console:
       enabled: true
@@ -15,17 +17,8 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  config:
+    import: "optional:configserver:http://localhost:8071"
+
 server:
   port: 8093
-
-build:
-  version: "3.0"
-
-cards:
-  message: "Welcome to the Cards related local API"
-  contactDetails:
-    name: "John Doe"
-    email: "john.doe@example.com"
-  onCallSupport:
-    - "(555) 555-1234"
-    - "(555) 555-5678"
