@@ -1,15 +1,38 @@
+logging:
+  level:
+    org.springframework.cloud: TRACE
+
 spring:
   application:
     name: "configserver"
 
   profiles:
-    active: native
+#    active: native
+    active: git
+
 
   cloud:
     config:
       server:
-        native:
-          search-locations: classpath:/config
+#        native:
+#          search-locations: classpath:/config
+#          search-locations: "file:///home//galthran//app-config"
+        git:
+          uri: https://github.com/galthran/eazybytes-config.git
+          default-label: main
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+
+encrypt:
+  key-store:
+    location: keystore.jks
+    secret: secret
+    password: password
+    type: jks
+    alias: eazybytes
+
+# key: "APODNU3093r2rbjzxcn09u213asdhy08WRFH"
 
 server:
   port: 8071
