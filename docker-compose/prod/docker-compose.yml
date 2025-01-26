@@ -18,7 +18,7 @@ services:
       - easybank
 
   config_server:
-    image: rafaljarosinski/configserver:0.0.3-SNAPSHOT
+    image: rafaljarosinski/configserver:0.0.2-SNAPSHOT
     container_name: config_server
     ports:
         - "8071:8071"
@@ -36,7 +36,7 @@ services:
       - easybank
 
   accounts:
-    image: rafaljarosinski/accounts:0.0.3-SNAPSHOT
+    image: rafaljarosinski/accounts:0.0.4-SNAPSHOT
     container_name: accounts-ms
     ports:
         - "8091:8091"
@@ -55,7 +55,7 @@ services:
         condition: service_healthy
 
   loans:
-    image: rafaljarosinski/cards:0.0.3-SNAPSHOT
+    image: rafaljarosinski/cards:0.0.4-SNAPSHOT
     container_name: loans-ms
     ports:
         - "8092:8092"
@@ -74,7 +74,7 @@ services:
         condition: service_healthy
 
   cards:
-    image: rafaljarosinski/cards:0.0.3-SNAPSHOT
+    image: rafaljarosinski/cards:0.0.4-SNAPSHOT
     container_name: cards-ms
     ports:
       - "8093:8093"

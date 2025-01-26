@@ -18,16 +18,17 @@ services:
       retries: 10
       start_period: 5s
 
-  config_server:
+  configserver:
     extends:
       file: common-config.yml
       service: microservice-base-service
     image: rafaljarosinski/configserver:0.0.3-SNAPSHOT
-    container_name: config_server
+    container_name: configserver
+    hostname: configserver
     ports:
         - "8071:8071"
     healthcheck:
-      test: "curl --fail --silent http://localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent http://localhost:8071/actuator/health | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -40,42 +41,42 @@ services:
     extends:
       file: common-config.yml
       service: microservice-configserver-config
-    image: rafaljarosinski/accounts:0.0.3-SNAPSHOT
+    image: rafaljarosinski/accounts:0.0.4-SNAPSHOT
     container_name: accounts-ms
     ports:
         - "8091:8091"
     environment:
-      SPRING_APP_NAME: "accounts"
+      SPRING_APPLICATION_NAME: "accounts"
     depends_on:
-      config_server:
+      configserver:
         condition: service_healthy
 
   loans:
     extends:
       file: common-config.yml
       service: microservice-configserver-config
-    image: rafaljarosinski/cards:0.0.3-SNAPSHOT
+    image: rafaljarosinski/loans:0.0.4-SNAPSHOT
     container_name: loans-ms
     ports:
         - "8092:8092"
     environment:
-      SPRING_APP_NAME: "loans"
+      SPRING_APPLICATION_NAME: "loans"
     depends_on:
-      config_server:
+      configserver:
         condition: service_healthy
 
   cards:
     extends:
       file: common-config.yml
       service: microservice-configserver-config
-    image: rafaljarosinski/cards:0.0.3-SNAPSHOT
+    image: rafaljarosinski/cards:0.0.4-SNAPSHOT
     container_name: cards-ms
     ports:
       - "8093:8093"
     environment:
-      SPRING_APP_NAME: "cards"
+      SPRING_APPLICATION_NAME: "cards"
     depends_on:
-      config_server:
+      configserver:
         condition: service_healthy
 
 networks:

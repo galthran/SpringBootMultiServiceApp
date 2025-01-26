@@ -21,7 +21,7 @@ spring:
     import: ${SPRING_CONFIG_IMPORT}
 
   rabbitmq:
-    host: localhost
+    host: ${RABBITMQ_HOST:localhost}
     port: 5672
     username: guest
     password: guest
