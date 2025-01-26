@@ -1,0 +1,21 @@
+services:
+  network-deploy-service:
+    networks:
+      - easybank
+
+  microservice-base-service:
+    extends:
+      service: network-deploy-service
+    deploy:
+      resources:
+        limits:
+          memory: "700m"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+
+  microservice-configserver-config:
+    extends:
+      service: microservice-base-service
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
