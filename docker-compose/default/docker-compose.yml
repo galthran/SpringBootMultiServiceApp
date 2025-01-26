@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+    image: rabbitmq:3.9-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  config_server:
+    extends:
+      file: common-config.yml
+      service: microservice-base-service
+    image: rafaljarosinski/configserver:0.0.3-SNAPSHOT
+    container_name: config_server
+    ports:
+        - "8071:8071"
+    healthcheck:
+      test: "curl --fail --silent http://localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  accounts:
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    image: rafaljarosinski/accounts:0.0.3-SNAPSHOT
+    container_name: accounts-ms
+    ports:
+        - "8091:8091"
+    environment:
+      SPRING_APP_NAME: "accounts"
+    depends_on:
+      config_server:
+        condition: service_healthy
+
+  loans:
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    image: rafaljarosinski/cards:0.0.3-SNAPSHOT
+    container_name: loans-ms
+    ports:
+        - "8092:8092"
+    environment:
+      SPRING_APP_NAME: "loans"
+    depends_on:
+      config_server:
+        condition: service_healthy
+
+  cards:
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    image: rafaljarosinski/cards:0.0.3-SNAPSHOT
+    container_name: cards-ms
+    ports:
+      - "8093:8093"
+    environment:
+      SPRING_APP_NAME: "cards"
+    depends_on:
+      config_server:
+        condition: service_healthy
+
+networks:
+  easybank:
+    driver: bridge
