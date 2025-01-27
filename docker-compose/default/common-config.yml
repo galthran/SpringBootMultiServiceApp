@@ -19,3 +19,16 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+
+  microservice-db-config:
+    extends: network-deploy-service
+    image: mysql:9.2.0
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    environment:
+      MYSQL_ROOT_PASSWORD: 11asddsa
+      MYSQL_DATABASE: easybankdb
