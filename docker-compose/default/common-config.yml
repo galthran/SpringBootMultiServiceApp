@@ -31,4 +31,3 @@ services:
       start_period: 5s
     environment:
       MYSQL_ROOT_PASSWORD: 11asddsa
-      MYSQL_DATABASE: easybankdb
