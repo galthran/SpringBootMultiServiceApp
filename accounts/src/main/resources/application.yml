@@ -58,10 +58,8 @@ eureka:
     serviceUrl:
       defaultZone: http://${EUREKA_SERVER_HOST:localhost}:${EUREKA_SERVER_PORT:8070}/eureka
 
-
 server:
   port: 8091
-
 
 info:
   app:
