@@ -19,6 +19,12 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      EUREKA_SERVER_HOST: eurekaserver
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
 
   microservice-db-config:
     extends: network-deploy-service
