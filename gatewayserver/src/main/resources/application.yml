@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: gatewayserver
+  config:
+    import: ${SPRING_CONFIG_IMPORT}
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: 5672
+    username: guest
+    password: guest
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    env:
+      enabled: true
+  endpoint:
+    gateway:
+      enabled: unrestricted
+
+server:
+  port: 8072
+
+info:
+  app:
+    name: gatewayserver
+    description: Easy Bank Gateway Server Application
+    version: 1.0.0
